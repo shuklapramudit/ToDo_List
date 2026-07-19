@@ -1,12 +1,12 @@
 import db from "../config/db.js"
 
-const createTask = (task_name, description, priority) => {
+const createTask = (task_name, description, priority, status = "Pending") => {
     return new Promise((resolve, reject) => {
         const insertQuery = `
-        INSERT INTO tasks (task_name, description, priority)
-        VALUES(?, ?, ?)
+        INSERT INTO tasks (task_name, description, priority, status)
+        VALUES(?, ?, ?, ?)
         `;
-        db.query(insertQuery, [task_name, description, priority], (err, result) => {
+        db.query(insertQuery, [task_name, description, priority, status], (err, result) => {
             if (err) {
                 return reject(err)
             }

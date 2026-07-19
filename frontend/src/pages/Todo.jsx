@@ -6,6 +6,7 @@ function Todo() {
   const [taskName, setTaskName] = useState("");
   const [description, setDescription] = useState("");
   const [priority, setPriority] = useState("High");
+  const [status, setStatus] = useState("Pending");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -15,6 +16,7 @@ function Todo() {
         task_name: taskName,
         description: description,
         priority: priority,
+        status: status,
       });
 
       console.log(response.data);
@@ -25,6 +27,7 @@ function Todo() {
       setTaskName("");
       setDescription("");
       setPriority("High");
+      setStatus("Pending");
     } catch (error) {
       console.error(error);
       alert("Failed to add task");
@@ -60,6 +63,16 @@ function Todo() {
           <option value="High">High</option>
           <option value="Medium">Medium</option>
           <option value="Low">Low</option>
+        </select>
+        <label htmlFor="status">Status</label>
+        <select
+          id="status"
+          value={status}
+          onChange={(e) => setStatus(e.target.value)}
+        >
+          <option value="Pending">Pending</option>
+          <option value="In Progress">In Progress</option>
+          <option value="Completed">Completed</option>
         </select>
         <button type="submit">Add Task</button>
       </form>

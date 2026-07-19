@@ -3,8 +3,9 @@ use todo;
 CREATE TABLE tasks(
     id INT AUTO_INCREMENT PRIMARY KEY ,
     task_name VARCHAR(255) NOT NULL,
-    decriptionx TEXT, 
-    priority ENUM("High", "Medium", "Low"), NOT NULL,
+    description TEXT,
+    priority ENUM("High", "Medium", "Low") NOT NULL,
+    status ENUM("Pending", "In Progress", "Completed") NOT NULL DEFAULT "Pending",
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 CREATE TABLES users(

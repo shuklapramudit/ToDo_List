@@ -8,8 +8,8 @@ import {
 
 const CreateTaskController = async (req, res) => {
     try {
-        const { task_name, description, priority } = req.body;
-        const result = await createTask(task_name, description, priority);
+        const { task_name, description, priority, status } = req.body;
+        const result = await createTask(task_name, description, priority, status);
 
         res.status(200).json({
             success: true,
