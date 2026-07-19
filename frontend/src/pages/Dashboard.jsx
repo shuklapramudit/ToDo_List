@@ -9,6 +9,9 @@ function Dashboard() {
     const [priority, setPriority] = useState("High");
     const [status, setStatus] = useState("Pending");
     const [tasks, setTasks] = useState([]);
+    const [editingTaskId, setEditingTaskId] = useState(null);
+    const [editedStatus, setEditedStatus] = useState("");
+    const [completionComment, setCompletionComment] = useState("");
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
     const [success, setSuccess] = useState("");
@@ -67,13 +70,71 @@ function Dashboard() {
             setDescription("");
             setPriority("High");
             setStatus("Pending");
-            setStatus("Pending");
             fetchTasks();
         } catch (err) {
             setError(err.response?.data?.message || "Failed to add task.");
         } finally {
             setLoading(false);
         }
+    };
+
+    const startEditingStatus = (task) => {
+        setEditingTaskId(task.id);
+        setEditedStatus(task.status || "Pending");
+        setCompletionComment("");
+        setSuccess("");
+        setError("");
+    };
+
+    const cancelEditingStatus = () => {
+        setEditingTaskId(null);
+        setEditedStatus("");
+        setCompletionComment("");
+    };
+
+    const updateTaskStatus = async (taskId, taskName, description, priority, newStatus, comment = "") => {
+        const token = localStorage.getItem("token");
+        if (!token) {
+            setError("You must be logged in to update task status.");
+            return;
+        }
+
+        try {
+            setLoading(true);
+            await axios.put(
+                `http://localhost:5000/api/tasks/${taskId}`,
+                {
+                    task_name: taskName,
+                    description,
+                    priority,
+                    status: newStatus,
+                    completion_comment: comment,
+                },
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                }
+            );
+
+            setSuccess("Task status updated.");
+            cancelEditingStatus();
+            fetchTasks();
+        } catch (err) {
+            setError(err.response?.data?.message || "Failed to update task status.");
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handleStatusSave = async (task) => {
+        const allowed = ["Pending", "In Progress", "Completed"];
+        if (!allowed.includes(editedStatus)) {
+            setError("Please choose Pending, In Progress, or Completed.");
+            return;
+        }
+
+        await updateTaskStatus(task.id, task.task_name, task.description, task.priority, editedStatus, editedStatus === "Completed" ? completionComment : "");
     };
 
     return (
@@ -146,10 +207,40 @@ function Dashboard() {
                                         <span className={`task-priority ${task.priority.toLowerCase()}`}>
                                             {task.priority}
                                         </span>
-                                        {task.status && (
-                                            <span className={`task-status ${task.status.toLowerCase().replace(/\s+/g, "-")}`}>
-                                                {task.status}
-                                            </span>
+                                        {editingTaskId === task.id ? (
+                                            <div className="task-status-edit">
+                                                <select value={editedStatus} onChange={(e) => setEditedStatus(e.target.value)}>
+                                                    <option value="Pending">Pending</option>
+                                                    <option value="In Progress">In Progress</option>
+                                                    <option value="Completed">Completed</option>
+                                                </select>
+                                                {editedStatus === "Completed" && (
+                                                    <textarea
+                                                        className="status-comment"
+                                                        value={completionComment}
+                                                        onChange={(e) => setCompletionComment(e.target.value)}
+                                                        placeholder="Enter completion comment..."
+                                                    />
+                                                )}
+                                                <div className="status-actions">
+                                                    <button type="button" className="btn-save" onClick={() => handleStatusSave(task)} disabled={loading}>
+                                                        Save
+                                                    </button>
+                                                    <button type="button" className="btn-cancel" onClick={cancelEditingStatus}>
+                                                        Cancel
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        ) : (
+                                            task.status && (
+                                                <span
+                                                    className={`task-status ${task.status.toLowerCase().replace(/\s+/g, "-")}`}
+                                                    onClick={() => startEditingStatus(task)}
+                                                    title="Click to change status"
+                                                >
+                                                    {task.status}
+                                                </span>
+                                            )
                                         )}
                                     </div>
                                 </div>
