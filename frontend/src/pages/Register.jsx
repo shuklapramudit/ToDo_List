@@ -4,82 +4,68 @@ import axios from "axios";
 import "../style/Auth.css";
 
 function Register() {
+  const navigate = useNavigate();
 
-    const navigate = useNavigate();
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
-    const [name, setName] = useState("");
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
+  const handleRegister = async (e) => {
+    e.preventDefault();
 
-    const handleRegister = async (e) => {
-        e.preventDefault();
+    try {
+      const API = import.meta.env.VITE_API_URL;
 
-        try {
+      const res = await axios.post(`${API}/api/auth/register`, {
+        name,
+        email,
+        password,
+      });
 
-            const res = await axios.post(
-                "http://localhost:5000/api/auth/register",
-                {
-                    name,
-                    email,
-                    password
-                }
-            );
+      alert(res.data.message);
 
-            alert(res.data.message);
+      navigate("/");
+    } catch (error) {
+      alert(error.response?.data?.message || "Registration Failed");
+    }
+  };
 
-            navigate("/");
+  return (
+    <div className="register-container">
+      <div className="register-box">
+        <h1>Register</h1>
 
-        } catch (error) {
+        <form onSubmit={handleRegister}>
+          <input
+            type="text"
+            placeholder="Full Name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+          />
 
-            alert(
-                error.response?.data?.message || "Registration Failed"
-            );
+          <input
+            type="email"
+            placeholder="Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
 
-        }
-    };
+          <input
+            type="password"
+            placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
 
-    return (
+          <button type="submit">Register</button>
+        </form>
 
-        <div className="register-container">
-            <div className="register-box">
-                <h1>Register</h1>
-
-                <form onSubmit={handleRegister}>
-
-                    <input
-                        type="text"
-                        placeholder="Full Name"
-                        value={name}
-                        onChange={(e) => setName(e.target.value)}
-                    />
-
-                    <input
-                        type="email"
-                        placeholder="Email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                    />
-
-                    <input
-                        type="password"
-                        placeholder="Password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                    />
-
-                    <button type="submit">
-                        Register
-                    </button>
-
-                </form>
-
-                <p>
-                    Already have an account? <Link to="/">Login</Link>
-                </p>
-            </div>
-        </div>
-
-    );
+        <p>
+          Already have an account? <Link to="/">Login</Link>
+        </p>
+      </div>
+    </div>
+  );
 }
 
 export default Register;

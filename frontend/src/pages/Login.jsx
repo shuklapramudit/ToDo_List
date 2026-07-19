@@ -4,70 +4,59 @@ import axios from "axios";
 import "../style/Auth.css";
 
 function Login() {
-    const navigate = useNavigate();
+  const navigate = useNavigate();
 
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
-    const handleLogin = async (e) => {
-        e.preventDefault();
+  const handleLogin = async (e) => {
+    e.preventDefault();
 
-        try {
+    try {
+      const API = import.meta.env.VITE_API_URL;
 
-            const res = await axios.post(
-                "http://localhost:5000/api/auth/login",
-                {
-                    email,
-                    password
-                }
-            );
+      await axios.post(`${API}/api/auth/login`, {
+        email,
+        password,
+      });
+      localStorage.setItem("token", res.data.token);
 
-            localStorage.setItem(
-                "token",
-                res.data.token
-            );
+      alert("Login Successful");
+      navigate("/dashboard");
+    } catch (error) {
+      alert(error.response?.data?.message || "Login Failed");
+    }
+  };
 
-            alert("Login Successful");
-            navigate("/dashboard");
+  return (
+    <div className="login-container">
+      <div className="login-box">
+        <h1>Login</h1>
 
-        } catch (error) {
-            alert(error.response?.data?.message || "Login Failed");
-        }
-    };
+        <form onSubmit={handleLogin}>
+          <input
+            type="email"
+            placeholder="Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
 
-    return (
-        <div className="login-container">
-            <div className="login-box">
-                <h1>Login</h1>
+          <input
+            type="password"
+            placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
 
-                <form onSubmit={handleLogin}>
+          <button type="submit">Login</button>
+        </form>
 
-                    <input
-                        type="email"
-                        placeholder="Email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                    />
-
-                    <input
-                        type="password"
-                        placeholder="Password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                    />
-
-                    <button type="submit">
-                        Login
-                    </button>
-
-                </form>
-
-                <p>
-                    Don't have an account? <Link to="/register">Register</Link>
-                </p>
-            </div>
-        </div>
-    );
+        <p>
+          Don't have an account? <Link to="/register">Register</Link>
+        </p>
+      </div>
+    </div>
+  );
 }
 
 export default Login;
