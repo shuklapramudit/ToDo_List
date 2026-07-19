@@ -1,27 +1,40 @@
 import express from "express";
 import dotenv from "dotenv";
-import db from "./config/db.js";
-import cors from "cors"
+import cors from "cors";
 
+import db from "./config/db.js";
 import authRoutes from "./routes/authRoutes.js";
 import taskRoutes from "./routes/taskRoutes.js";
 
 dotenv.config();
 
-
-
 const app = express();
 
+// Middleware
+app.use(
+    cors({
+        origin: [
+            "http://localhost:5173",
+            "https://todo-list-pramudit.vercel.app"
+        ],
+        methods: ["GET", "POST", "PUT", "DELETE"],
+        credentials: true,
+    })
+);
+
 app.use(express.json());
-app.use(express.json());
-app.use(cors());
-app.use(express.json());
-app.use("/api/tasks", taskRoutes);
-app.use("/api/auth", authRoutes);
-const PORT = 5000;
+
+// Routes
 app.get("/", (req, res) => {
     res.send("Todo Backend API is running...");
 });
+
+app.use("/api/auth", authRoutes);
+app.use("/api/tasks", taskRoutes);
+
+// Server
+const PORT = process.env.PORT || 5000;
+
 app.listen(PORT, () => {
-    console.log(`Server running on http://localhost:${PORT}`);
+    console.log(`✅ Server running on port ${PORT}`);
 });
