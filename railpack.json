@@ -1,0 +1,15 @@
+{
+  "$schema": "https://schema.railpack.com",
+  "provider": "node",
+  "packageManager": "npm",
+  "steps": {
+    "install": {
+      "commands": [
+        "npm --prefix backend install"
+      ]
+    }
+  },
+  "deploy": {
+    "startCommand": "node backend/src/server.js"
+  }
+}

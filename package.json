@@ -2,7 +2,9 @@
   "name": "todo-monorepo-root",
   "private": true,
   "version": "1.0.0",
-  "main": "backend/src/server.js",
+  "type": "module",
+  "packageManager": "npm@10",
+  "main": "index.js",
   "scripts": {
     "start": "node backend/src/server.js",
     "start:backend": "npm --prefix backend start",
