@@ -2,16 +2,13 @@ import db from "../config/db.js";
 
 const createUser = (name, email, password) => {
     return new Promise((resolve, reject) => {
-        const insertQuery = `
+        const query = `
             INSERT INTO users (name, email, password)
             VALUES (?, ?, ?)
         `;
 
-        db.query(insertQuery, [name, email, password], (err, result) => {
-            if (err) {
-                return reject(err);
-            }
-
+        db.query(query, [name, email, password], (err, result) => {
+            if (err) return reject(err);
             resolve(result);
         });
     });
@@ -19,35 +16,13 @@ const createUser = (name, email, password) => {
 
 const getUserByEmail = (email) => {
     return new Promise((resolve, reject) => {
-        const selectQuery = `
-            SELECT *
-            FROM users
+        const query = `
+            SELECT * FROM users
             WHERE email = ?
         `;
 
-        db.query(selectQuery, [email], (err, result) => {
-            if (err) {
-                return reject(err);
-            }
-
-            resolve(result);
-        });
-    });
-};
-
-const getUserById = (id) => {
-    return new Promise((resolve, reject) => {
-        const selectQuery = `
-            SELECT id, name, email, created_at
-            FROM users
-            WHERE id = ?
-        `;
-
-        db.query(selectQuery, [id], (err, result) => {
-            if (err) {
-                return reject(err);
-            }
-
+        db.query(query, [email], (err, result) => {
+            if (err) return reject(err);
             resolve(result);
         });
     });
@@ -55,6 +30,5 @@ const getUserById = (id) => {
 
 export {
     createUser,
-    getUserByEmail,
-    getUserById
+    getUserByEmail
 };
