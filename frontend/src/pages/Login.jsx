@@ -15,15 +15,18 @@ function Login() {
     try {
       const API = import.meta.env.VITE_API_URL;
 
-      await axios.post(`${API}/api/auth/login`, {
+      const res = await axios.post(`${API}/api/auth/login`, {
         email,
         password,
       });
+
       localStorage.setItem("token", res.data.token);
 
       alert("Login Successful");
       navigate("/dashboard");
     } catch (error) {
+      console.error(error);
+
       alert(error.response?.data?.message || "Login Failed");
     }
   };

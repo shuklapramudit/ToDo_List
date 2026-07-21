@@ -1,10 +1,3 @@
-// import bcrypt from "bcryptjs";
-// import jwt from "jsonwebtoken";
-
-// import {
-//     createUser,
-//     getUserByEmail
-// } from "../models/userModel.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 
@@ -17,7 +10,6 @@ const registerController = async (req, res) => {
     try {
         const { name, email, password } = req.body;
 
-        // Check if all fields are provided
         if (!name || !email || !password) {
             return res.status(400).json({
                 success: false,
@@ -25,25 +17,18 @@ const registerController = async (req, res) => {
             });
         }
 
-        // Check if email already exists
         const existingUser = await getUserByEmail(email);
 
-        if (existingUser.length > 0) {
+        if (Array.isArray(existingUser) && existingUser.length > 0) {
             return res.status(409).json({
                 success: false,
                 message: "Email already registered."
             });
         }
 
-        // Hash password
         const hashedPassword = await bcrypt.hash(password, 10);
 
-        // Save user
-        const result = await createUser(
-            name,
-            email,
-            hashedPassword
-        );
+        const result = await createUser(name, email, hashedPassword);
 
         res.status(201).json({
             success: true,
@@ -54,7 +39,6 @@ const registerController = async (req, res) => {
                 email
             }
         });
-
     } catch (error) {
         res.status(500).json({
             success: false,
@@ -62,11 +46,11 @@ const registerController = async (req, res) => {
         });
     }
 };
+
 const loginController = async (req, res) => {
     try {
         const { email, password } = req.body;
 
-        // Check required fields
         if (!email || !password) {
             return res.status(400).json({
                 success: false,
@@ -74,21 +58,16 @@ const loginController = async (req, res) => {
             });
         }
 
-        // Check user exists
         const user = await getUserByEmail(email);
 
-        if (user.length === 0) {
+        if (!Array.isArray(user) || user.length === 0) {
             return res.status(404).json({
                 success: false,
                 message: "User not found."
             });
         }
 
-        // Compare password
-        const isMatch = await bcrypt.compare(
-            password,
-            user[0].password
-        );
+        const isMatch = await bcrypt.compare(password, user[0].password);
 
         if (!isMatch) {
             return res.status(401).json({
@@ -97,7 +76,13 @@ const loginController = async (req, res) => {
             });
         }
 
-        // Generate JWT
+        if (!process.env.JWT_SECRET) {
+            return res.status(500).json({
+                success: false,
+                message: "JWT_SECRET is not configured."
+            });
+        }
+
         const token = jwt.sign(
             {
                 id: user[0].id,
@@ -119,7 +104,6 @@ const loginController = async (req, res) => {
                 email: user[0].email
             }
         });
-
     } catch (error) {
         res.status(500).json({
             success: false,
@@ -130,5 +114,5 @@ const loginController = async (req, res) => {
 
 export {
     registerController,
-     loginController
+    loginController
 };

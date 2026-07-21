@@ -1,18 +1,19 @@
-Create DATABASE todo;
-use todo;
-CREATE TABLE tasks(
-    id INT AUTO_INCREMENT PRIMARY KEY ,
+CREATE DATABASE IF NOT EXISTS test;
+USE test;
+
+CREATE TABLE IF NOT EXISTS tasks (
+    id INT AUTO_INCREMENT PRIMARY KEY,
     task_name VARCHAR(255) NOT NULL,
     description TEXT,
-    priority ENUM("High", "Medium", "Low") NOT NULL,
-    status ENUM("Pending", "In Progress", "Completed") NOT NULL DEFAULT "Pending",
+    priority ENUM('High', 'Medium', 'Low') NOT NULL,
+    status ENUM('Pending', 'In Progress', 'Completed') NOT NULL DEFAULT 'Pending',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
-CREATE TABLES users(
+
+CREATE TABLE IF NOT EXISTS users (
     id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(25) NOT NULL,
-    email VARCHAR(30)UNIQUE  NOT NULL, 
-    password VARCHAR(10) UNIQUE NOT NULL,
+    email VARCHAR(100) UNIQUE NOT NULL,
+    password VARCHAR(255) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-
-)
+);
