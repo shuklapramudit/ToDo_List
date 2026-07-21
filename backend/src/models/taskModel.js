@@ -1,7 +1,7 @@
-import dbConnection from "../config/db.js";
+import * as dbModule from "../config/db.js";
 
-// Safe database connection fallback (Handles both default export and named exports like { db } or { pool })
-const db = dbConnection.default || dbConnection.db || dbConnection.pool || dbConnection;
+// Extracts connection pool regardless of how db.js exported it (default, db, pool, etc.)
+const db = dbModule.default || dbModule.db || dbModule.pool || dbModule;
 
 // 1. Get task by ID
 export const getById = async (taskId) => {
