@@ -13,11 +13,25 @@ const app = express();
 // ===============================
 // CORS Configuration
 // ===============================
+const allowedOrigins = [
+  "http://localhost:5173",
+  "http://localhost:3000",
+  process.env.CLIENT_URL?.replace(/\/$/, ""),
+  "https://to-do-list-rust-eta-49.vercel.app",
+].filter(Boolean);
+
 const corsOptions = {
-  origin: [
-    "http://localhost:5173",
-    "https://to-do-list-rust-eta-49.vercel.app",
-  ],
+  origin: function (origin, callback) {
+    if (
+      !origin ||
+      allowedOrigins.includes(origin) ||
+      origin.endsWith(".vercel.app")
+    ) {
+      callback(null, true);
+    } else {
+      callback(new Error("Blocked by CORS policy"));
+    }
+  },
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"],
   credentials: true,
@@ -26,7 +40,9 @@ const corsOptions = {
 app.use(cors(corsOptions));
 app.options("*", cors(corsOptions));
 
+// Body Parser Middleware
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 // ===============================
 // Routes
@@ -48,17 +64,23 @@ app.use("/api/auth", authRoutes);
 app.use("/api/tasks", taskRoutes);
 
 // ===============================
+// Global Error Handling Middleware
+// ===============================
+app.use((err, req, res, next) => {
+  console.error("❌ Server Error:", err.stack || err.message);
+  res.status(err.status || 500).json({
+    success: false,
+    message: err.message || "Internal Server Error",
+  });
+});
+
+// ===============================
 // Server
 // ===============================
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {
   console.log("================================");
-  console.log("Server Started");
-  console.log("PORT:", PORT);
-  console.log("DB_HOST:", process.env.DB_HOST);
-  console.log("DB_PORT:", process.env.DB_PORT);
-  console.log("DB_USER:", process.env.DB_USER);
-  console.log("DB_NAME:", process.env.DB_NAME);
+  console.log("🚀 Server Started on PORT:", PORT);
   console.log("================================");
 });
