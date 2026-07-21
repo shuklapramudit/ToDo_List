@@ -37,6 +37,12 @@
   background-clip: text;
   font-weight: 800;
 }
+.about-card h1 {
+  background: linear-gradient(135deg, #2563eb, #7c3aed);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
 
 .about-subtitle {
   color: #64748b;
