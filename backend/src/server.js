@@ -20,25 +20,24 @@ const allowedOrigins = [
 // ===============================
 // Robust CORS & Preflight Setup
 // ===============================
-app.use(
-  cors({
-    origin: function (origin, callback) {
-      // Allow requests with no origin (like mobile apps, curl, or Postman)
-      if (!origin || allowedOrigins.indexOf(origin) !== -1) {
-        callback(null, true);
-      } else {
-        // Fallback: Allow any origin during testing
-        callback(null, true);
-      }
-    },
-    methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"],
-    credentials: true,
-  })
-);
+const corsOptions = {
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      // Fallback for testing environments
+      callback(null, true);
+    }
+  },
+  methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"],
+  credentials: true,
+};
 
-// Manual Preflight Handler for Edge Cases
-app.options("*", cors());
+app.use(cors(corsOptions));
+
+// Preflight handler for all routes
+app.options("*", cors(corsOptions));
 
 // Body Parser Middleware
 app.use(express.json());
