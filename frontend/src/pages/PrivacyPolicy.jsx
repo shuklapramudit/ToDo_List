@@ -74,7 +74,7 @@ function PrivacyPolicy() {
 
                 <section className="privacy-section">
                     <h2>10. Contact Us</h2>
-                    <p>If you have any questions about this Privacy Policy, please contact us at privacy@todoapp.com.</p>
+                    <p>If you have any questions about this Privacy Policy, please contact us at shuklapramudit288@gmail.com.</p>
                 </section>
             </div>
         </div>
