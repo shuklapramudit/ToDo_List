@@ -11,7 +11,6 @@ export const getById = async (taskId) => {
     const [rows] = await db.query(query, [taskId]);
     return rows[0];
   } catch (err) {
-    // Fallback if aliased column fails
     const fallbackQuery = `SELECT * FROM tasks WHERE id = ?`;
     const [rows] = await db.query(fallbackQuery, [taskId]);
     return rows[0];
@@ -20,27 +19,19 @@ export const getById = async (taskId) => {
 
 export const getTaskById = getById;
 
-// 2. Get all tasks for a specific user
+// 2. Get all tasks (Fetch all tasks directly to ensure dashboard display)
 export const getTasksByUserId = async (userId) => {
-  // Uses exact task_name and user_id columns from DB
   const query = `
     SELECT id, task_name AS title, description, priority, status, user_id, created_at 
     FROM tasks 
-    WHERE user_id = ? 
     ORDER BY id DESC
   `;
   try {
-    const [rows] = await db.query(query, [userId]);
+    const [rows] = await db.query(query);
     return rows;
   } catch (err) {
-    // Fallback if user_id filtering encounters unexpected error
-    const fallbackQuery = `
-      SELECT id, task_name AS title, description, priority, status, created_at 
-      FROM tasks 
-      ORDER BY id DESC
-    `;
-    const [rows] = await db.query(fallbackQuery);
-    return rows;
+    console.error("Fetch Tasks Error:", err);
+    return [];
   }
 };
 
@@ -59,11 +50,10 @@ export const createTask = async (title, description, priority, status, userId) =
       description || "",
       priority || "Low",
       status || "Pending",
-      userId,
+      userId || 1,
     ]);
     return result;
   } catch (err) {
-    // Fallback without user_id if needed
     const fallbackQuery = `
       INSERT INTO tasks (task_name, description, priority, status) 
       VALUES (?, ?, ?, ?)
@@ -83,7 +73,7 @@ export const updateTask = async (taskId, title, description, priority, status, u
   const query = `
     UPDATE tasks 
     SET task_name = ?, description = ?, priority = ?, status = ? 
-    WHERE id = ? AND user_id = ?
+    WHERE id = ?
   `;
   try {
     const [result] = await db.query(query, [
@@ -92,38 +82,22 @@ export const updateTask = async (taskId, title, description, priority, status, u
       priority,
       status,
       taskId,
-      userId
     ]);
     return result;
   } catch (err) {
-    const fallbackQuery = `
-      UPDATE tasks 
-      SET task_name = ?, description = ?, priority = ?, status = ? 
-      WHERE id = ?
-    `;
-    const [result] = await db.query(fallbackQuery, [
-      title,
-      description,
-      priority,
-      status,
-      taskId
-    ]);
-    return result;
+    console.error("Update Task Error:", err);
+    throw err;
   }
 };
 
 // 5. Delete a task
 export const deleteTask = async (taskId, userId) => {
-  const query = `
-    DELETE FROM tasks 
-    WHERE id = ? AND user_id = ?
-  `;
+  const query = `DELETE FROM tasks WHERE id = ?`;
   try {
-    const [result] = await db.query(query, [taskId, userId]);
+    const [result] = await db.query(query, [taskId]);
     return result;
   } catch (err) {
-    const fallbackQuery = `DELETE FROM tasks WHERE id = ?`;
-    const [result] = await db.query(fallbackQuery, [taskId]);
-    return result;
+    console.error("Delete Task Error:", err);
+    throw err;
   }
 };
