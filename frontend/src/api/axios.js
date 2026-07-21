@@ -1,8 +1,8 @@
 import axios from "axios";
 
-// Automatically handles environment URL or Render URL without trailing slash issues
+// Environment Variable se Backend Base URL fetch karega
 const BASE_URL = (
-  import.meta.env.VITE_API_URL || "https://your-render-backend.onrender.com"
+  import.meta.env.VITE_API_URL || "https://todo-list-b66a.onrender.com"
 ).replace(/\/$/, "");
 
 const API = axios.create({
@@ -13,7 +13,7 @@ const API = axios.create({
   },
 });
 
-// Attach Authorization Token if exists
+// Automatic Bearer Token Interceptor
 API.interceptors.request.use((config) => {
   const token = localStorage.getItem("token");
   if (token) {

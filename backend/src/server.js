@@ -11,42 +11,36 @@ dotenv.config();
 const app = express();
 
 // ===============================
-// Bulletproof CORS Configuration
+// Fail-Safe CORS & Preflight Handler
 // ===============================
-const allowedOrigins = [
-  "http://localhost:5173",
-  "http://localhost:3000",
-  "https://to-do-list-rust-eta-49.vercel.app",
-];
+app.use((req, res, next) => {
+  const origin = req.headers.origin;
 
-if (process.env.CLIENT_URL) {
-  allowedOrigins.push(process.env.CLIENT_URL.replace(/\/$/, ""));
-}
+  if (origin) {
+    res.setHeader("Access-Control-Allow-Origin", origin);
+  } else {
+    res.setHeader("Access-Control-Allow-Origin", "*");
+  }
 
-const corsOptions = {
-  origin: (origin, callback) => {
-    // Postman/Server-to-server requests ke liye
-    if (!origin) return callback(null, true);
+  res.setHeader(
+    "Access-Control-Allow-Methods",
+    "GET, POST, PUT, DELETE, PATCH, OPTIONS"
+  );
+  res.setHeader(
+    "Access-Control-Allow-Headers",
+    "Content-Type, Authorization, X-Requested-With"
+  );
+  res.setHeader("Access-Control-Allow-Credentials", "true");
 
-    const isAllowed =
-      allowedOrigins.includes(origin) || origin.endsWith(".vercel.app");
+  // Handle Browser Preflight OPTIONS Request Instantly
+  if (req.method === "OPTIONS") {
+    return res.status(200).end();
+  }
 
-    if (isAllowed) {
-      callback(null, true);
-    } else {
-      // ❌ DON'T pass new Error() - pass false so CORS header isn't broken
-      callback(null, false);
-    }
-  },
-  methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"],
-  credentials: true,
-  optionsSuccessStatus: 200, // Legacy browsers handling
-};
+  next();
+});
 
-// Apply CORS to all routes and preflight requests
-app.use(cors(corsOptions));
-app.options("*", cors(corsOptions));
+app.use(cors());
 
 // Body Parser Middleware
 app.use(express.json());
@@ -72,7 +66,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/tasks", taskRoutes);
 
 // ===============================
-// Global Error Handling Middleware
+// Global Error Handler
 // ===============================
 app.use((err, req, res, next) => {
   console.error("❌ Server Error:", err.stack || err.message);
@@ -83,7 +77,7 @@ app.use((err, req, res, next) => {
 });
 
 // ===============================
-// Server
+// Server Start
 // ===============================
 const PORT = process.env.PORT || 5000;
 
