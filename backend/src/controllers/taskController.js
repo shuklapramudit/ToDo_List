@@ -32,10 +32,7 @@ const CreateTaskController = async (req, res) => {
             }
         });
     } catch (err) {
-        res.status(500).json({
-            success: false,
-            message: err.message
-        });
+        res.status(500).json({ success: false, message: err.message });
     }
 };
 
@@ -58,10 +55,7 @@ const getAllTaskController = async (req, res) => {
             data: result || []
         });
     } catch (error) {
-        res.status(500).json({
-            success: false,
-            message: error.message
-        });
+        res.status(500).json({ success: false, message: error.message });
     }
 };
 
@@ -77,7 +71,6 @@ const getTaskByIdController = async (req, res) => {
             });
         }
 
-        // Passed userId to prevent fetching another user's task
         const result = await getById(id, userId);
 
         if (!result) {
@@ -87,15 +80,9 @@ const getTaskByIdController = async (req, res) => {
             });
         }
 
-        res.status(200).json({
-            success: true,
-            data: result
-        });
+        res.status(200).json({ success: true, data: result });
     } catch (err) {
-        res.status(500).json({
-            success: false,
-            message: err.message
-        });
+        res.status(500).json({ success: false, message: err.message });
     }
 };
 
@@ -114,7 +101,6 @@ const updateTaskController = async (req, res) => {
 
         const result = await updateTask(id, task_name, description, priority, status, userId, completion_comment);
 
-        // Check if any row was actually updated
         if (result.affectedRows === 0) {
             return res.status(404).json({
                 success: false,
@@ -122,15 +108,9 @@ const updateTaskController = async (req, res) => {
             });
         }
 
-        res.status(200).json({
-            success: true,
-            message: "Task updated successfully."
-        });
+        res.status(200).json({ success: true, message: "Task updated successfully." });
     } catch (error) {
-        res.status(500).json({
-            success: false,
-            message: error.message
-        });
+        res.status(500).json({ success: false, message: error.message });
     }
 };
 
@@ -148,7 +128,6 @@ const deleteTaskController = async (req, res) => {
 
         const result = await deleteTask(id, userId);
 
-        // Check if any row was actually deleted
         if (result.affectedRows === 0) {
             return res.status(404).json({
                 success: false,
@@ -156,15 +135,9 @@ const deleteTaskController = async (req, res) => {
             });
         }
 
-        res.status(200).json({
-            success: true,
-            message: "Task deleted successfully."
-        });
+        res.status(200).json({ success: true, message: "Task deleted successfully." });
     } catch (error) {
-        res.status(500).json({
-            success: false,
-            message: error.message
-        });
+        res.status(500).json({ success: false, message: error.message });
     }
 };
 
