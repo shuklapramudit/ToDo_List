@@ -11,6 +11,13 @@ const CreateTaskController = async (req, res) => {
         const { task_name, description, priority, status } = req.body;
         const userId = req.user?.id || req.userId || null;
 
+        if (!userId) {
+            return res.status(401).json({
+                success: false,
+                message: "Unauthorized: User identification missing."
+            });
+        }
+
         const result = await createTask(task_name, description, priority, status, userId);
 
         res.status(201).json({
@@ -35,6 +42,14 @@ const CreateTaskController = async (req, res) => {
 const getAllTaskController = async (req, res) => {
     try {
         const userId = req.user?.id || req.userId || null;
+
+        if (!userId) {
+            return res.status(401).json({
+                success: false,
+                message: "Unauthorized: User identification missing."
+            });
+        }
+
         const result = await getAllTask(userId);
 
         res.status(200).json({
@@ -53,12 +68,22 @@ const getAllTaskController = async (req, res) => {
 const getTaskByIdController = async (req, res) => {
     try {
         const { id } = req.params;
-        const result = await getById(id);
+        const userId = req.user?.id || req.userId || null;
+
+        if (!userId) {
+            return res.status(401).json({
+                success: false,
+                message: "Unauthorized: User identification missing."
+            });
+        }
+
+        // Passed userId to prevent fetching another user's task
+        const result = await getById(id, userId);
 
         if (!result) {
             return res.status(404).json({
                 success: false,
-                message: "Task not found."
+                message: "Task not found or access denied."
             });
         }
 
@@ -80,7 +105,22 @@ const updateTaskController = async (req, res) => {
         const { task_name, description, priority, status, completion_comment } = req.body;
         const userId = req.user?.id || req.userId || null;
 
+        if (!userId) {
+            return res.status(401).json({
+                success: false,
+                message: "Unauthorized: User identification missing."
+            });
+        }
+
         const result = await updateTask(id, task_name, description, priority, status, userId, completion_comment);
+
+        // Check if any row was actually updated
+        if (result.affectedRows === 0) {
+            return res.status(404).json({
+                success: false,
+                message: "Task not found or you do not have permission to update it."
+            });
+        }
 
         res.status(200).json({
             success: true,
@@ -99,7 +139,22 @@ const deleteTaskController = async (req, res) => {
         const { id } = req.params;
         const userId = req.user?.id || req.userId || null;
 
+        if (!userId) {
+            return res.status(401).json({
+                success: false,
+                message: "Unauthorized: User identification missing."
+            });
+        }
+
         const result = await deleteTask(id, userId);
+
+        // Check if any row was actually deleted
+        if (result.affectedRows === 0) {
+            return res.status(404).json({
+                success: false,
+                message: "Task not found or you do not have permission to delete it."
+            });
+        }
 
         res.status(200).json({
             success: true,
