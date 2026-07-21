@@ -29,14 +29,16 @@ body{
 
     background:linear-gradient(135deg,#4facfe,#00f2fe);
 }
-
 .login-box,
 .register-box{
 
-    width:400px;
+    width: 100%;
+
+    max-width: 400px;
+
     background:#fff;
 
-    padding:40px;
+    padding: clamp(24px, 5vw, 40px);
 
     border-radius:12px;
 
@@ -148,23 +150,25 @@ body{
     min-height:100vh;
     background: linear-gradient(180deg, #f0f8ff 0%, #dbeafe 45%, #f8fafc 100%);
     padding-bottom: 60px;
+    overflow-x: hidden;
 }
 
 .dashboard-header{
     background: linear-gradient(135deg, #2563eb, #7c3aed);
     color:white;
-    padding:32px 28px;
+    padding: clamp(24px, 5vw, 40px) clamp(20px, 4vw, 48px);
     display:flex;
     justify-content:space-between;
     align-items:center;
     gap:20px;
-    border-radius:0 0 28px 28px;
+    border-radius:0 0 clamp(20px, 4vw, 32px) clamp(20px, 4vw, 32px);
     box-shadow:0 24px 60px rgba(59,130,246,0.16);
     max-width:1180px;
     margin:0 auto;
     animation: fadeInUp 0.7s ease-out;
     position: relative;
     overflow: hidden;
+    flex-wrap: wrap;
 }
 
 .dashboard-header h1{
@@ -262,13 +266,13 @@ body{
 
     margin:24px auto 0;
 
-    padding:0 16px 40px;
+    padding:0 clamp(12px, 2vw, 20px) 40px;
 
     display:grid;
 
-    gap:24px;
+    gap: clamp(16px, 3vw, 28px);
 
-    grid-template-columns:minmax(340px,1fr) minmax(420px,1.35fr);
+    grid-template-columns: 1fr 1fr;
 
 }
 
@@ -821,7 +825,9 @@ body{
 
         color:#0f172a;
 
-        line-height:1.7;
+        line-height:1.5;
+
+        word-break: break-word;
 
     }
 
@@ -1063,7 +1069,7 @@ body{
     }
 }
 
-@media(max-width:900px){
+@media(max-width:768px){
 
     .dashboard-content{
 
@@ -1079,7 +1085,7 @@ body{
 
     .dashboard-header{
 
-        padding: 28px 24px;
+        padding: 24px 20px;
 
     }
 
@@ -1089,7 +1095,7 @@ body{
 
     .dashboard-content{
 
-        padding: 0 12px 32px;
+        padding: 0 10px 32px;
 
         gap: 20px;
 
@@ -1127,17 +1133,29 @@ body{
 
 }
 
-@media(max-width:500px){
+@media(max-width:480px){
+
+    .login-box,
+    .register-box{
+        width: 92%;
+        padding: 20px;
+    }
+
+    .login-box h1,
+    .register-box h1{
+        font-size: 1.5rem;
+        margin-bottom: 20px;
+    }
 
     .dashboard-header{
 
         flex-direction:column;
 
-        gap:15px;
+        gap:12px;
 
         text-align:center;
 
-        padding: 24px 18px;
+        padding: 20px 16px;
 
     }
 
@@ -1150,6 +1168,12 @@ body{
     .header-decoration{
 
         display: none;
+
+    }
+
+    .dashboard-subtitle{
+
+        font-size: 14px;
 
     }
 
@@ -1181,13 +1205,19 @@ body{
 
     .task-panel{
 
-        max-height: 500px;
+        max-height: 450px;
+
+    }
+
+    .panel-header h2{
+
+        font-size: 1.1rem;
 
     }
 
 }
 
-@media(max-width:400px){
+@media(max-width:380px){
 
     .stats-row{
 
