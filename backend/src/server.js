@@ -12,16 +12,16 @@ const app = express();
 
 // Middleware
 app.use(
-    cors({
-        origin: [
-            "http://localhost:5173",
-            "https://todo-list-pramudit.vercel.app"
-        ],
-        methods: ["GET", "POST", "PUT", "DELETE"],
-        credentials: true,
-    })
+  cors({
+    origin: [
+      "http://localhost:5173",
+      "https://to-do-list-rust-eta-49.vercel.app",
+      "https://todo-list-pramudit.vercel.app"
+    ],
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    credentials: true,
+  })
 );
-
 app.use(express.json());
 
 // Routes
