@@ -6,7 +6,7 @@ import "../style/About.css";
 function About() {
   return (
     <div className="about-page-wrapper">
-      <Header />
+     
 
       <main className="about-main">
         <div className="about-card">
