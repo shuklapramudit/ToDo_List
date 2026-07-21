@@ -1,13 +1,9 @@
 import { Link } from "react-router-dom";
-import Header from "../components/Header";
-import Footer from "../components/Footer";
 import "../style/About.css";
 
 function About() {
   return (
     <div className="about-page-wrapper">
-     
-
       <main className="about-main">
         <div className="about-card">
           <h1 className="about-title">About Todo App</h1>
@@ -71,8 +67,6 @@ function About() {
           </div>
         </div>
       </main>
-
-      <Footer />
     </div>
   );
 }
