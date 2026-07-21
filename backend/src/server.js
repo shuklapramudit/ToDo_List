@@ -10,37 +10,35 @@ dotenv.config();
 
 const app = express();
 
+// Allowed frontend origins (Vercel Production & Localhost)
+const allowedOrigins = [
+  "https://to-do-pramudit.vercel.app",
+  "http://localhost:5173",
+  "http://localhost:3000"
+];
+
 // ===============================
-// Fail-Safe CORS & Preflight Handler
+// Robust CORS & Preflight Setup
 // ===============================
-app.use((req, res, next) => {
-  const origin = req.headers.origin;
+app.use(
+  cors({
+    origin: function (origin, callback) {
+      // Allow requests with no origin (like mobile apps, curl, or Postman)
+      if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+        callback(null, true);
+      } else {
+        // Fallback: Allow any origin during testing
+        callback(null, true);
+      }
+    },
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"],
+    credentials: true,
+  })
+);
 
-  if (origin) {
-    res.setHeader("Access-Control-Allow-Origin", origin);
-  } else {
-    res.setHeader("Access-Control-Allow-Origin", "*");
-  }
-
-  res.setHeader(
-    "Access-Control-Allow-Methods",
-    "GET, POST, PUT, DELETE, PATCH, OPTIONS"
-  );
-  res.setHeader(
-    "Access-Control-Allow-Headers",
-    "Content-Type, Authorization, X-Requested-With"
-  );
-  res.setHeader("Access-Control-Allow-Credentials", "true");
-
-  // Handle Browser Preflight OPTIONS Request Instantly
-  if (req.method === "OPTIONS") {
-    return res.status(200).end();
-  }
-
-  next();
-});
-
-app.use(cors());
+// Manual Preflight Handler for Edge Cases
+app.options("*", cors());
 
 // Body Parser Middleware
 app.use(express.json());
