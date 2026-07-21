@@ -1,7 +1,4 @@
-import * as dbModule from "../config/db.js";
-
-// Extracts connection pool regardless of how db.js exported it (default, db, pool, etc.)
-const db = dbModule.default || dbModule.db || dbModule.pool || dbModule;
+import db from "../config/db.js";
 
 // 1. Get task by ID
 export const getById = async (taskId) => {
@@ -22,7 +19,7 @@ export const getById = async (taskId) => {
 
 export const getTaskById = getById;
 
-// 2. Get all tasks (Includes comment field)
+// 2. Get all tasks (Includes stages & comment)
 export const getTasksByUserId = async (userId) => {
   const query = `
     SELECT id, task_name AS title, description, priority, status, comment, user_id, created_at 
