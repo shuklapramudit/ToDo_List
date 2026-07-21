@@ -1,9 +1,12 @@
-import db from "../config/db.js";
+import dbConnection from "../config/db.js";
+
+// Safe database connection fallback (Handles both default export and named exports like { db } or { pool })
+const db = dbConnection.default || dbConnection.db || dbConnection.pool || dbConnection;
 
 // 1. Get task by ID
 export const getById = async (taskId) => {
   const query = `
-    SELECT id, task_name AS title, description, priority, status, user_id, created_at 
+    SELECT id, task_name AS title, description, priority, status, comment, user_id, created_at 
     FROM tasks 
     WHERE id = ?
   `;
@@ -19,10 +22,10 @@ export const getById = async (taskId) => {
 
 export const getTaskById = getById;
 
-// 2. Get all tasks (Fetch all tasks directly to ensure dashboard display)
+// 2. Get all tasks (Includes comment field)
 export const getTasksByUserId = async (userId) => {
   const query = `
-    SELECT id, task_name AS title, description, priority, status, user_id, created_at 
+    SELECT id, task_name AS title, description, priority, status, comment, user_id, created_at 
     FROM tasks 
     ORDER BY id DESC
   `;
@@ -68,19 +71,24 @@ export const createTask = async (title, description, priority, status, userId) =
   }
 };
 
-// 4. Update an existing task
-export const updateTask = async (taskId, title, description, priority, status, userId) => {
+// 4. Update task stage/status & comment
+export const updateTask = async (taskId, title, description, priority, status, userId, comment) => {
   const query = `
     UPDATE tasks 
-    SET task_name = ?, description = ?, priority = ?, status = ? 
+    SET task_name = COALESCE(?, task_name), 
+        description = COALESCE(?, description), 
+        priority = COALESCE(?, priority), 
+        status = COALESCE(?, status),
+        comment = COALESCE(?, comment)
     WHERE id = ?
   `;
   try {
     const [result] = await db.query(query, [
-      title,
-      description,
-      priority,
-      status,
+      title || null,
+      description || null,
+      priority || null,
+      status || null,
+      comment || null,
       taskId,
     ]);
     return result;
