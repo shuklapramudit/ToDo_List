@@ -1,8 +1,7 @@
-.page-wrapper {
+.about-page-wrapper {
   display: flex;
   flex-direction: column;
-  min-height: 0;
-  flex: 1;
+  min-height: 100vh;
   background-color: #f8fafc;
   width: 100%;
 }
@@ -12,50 +11,51 @@
   display: flex;
   justify-content: center;
   align-items: flex-start;
-  padding: clamp(2rem, 5vw, 4rem) 1rem;
+  padding: clamp(1.5rem, 4vw, 3.5rem) 1rem;
   width: 100%;
+  box-sizing: border-box;
 }
 
 .about-card {
   background: #ffffff;
-  max-width: 800px;
+  max-width: 850px;
   width: 100%;
-  padding: clamp(1.5rem, 4vw, 2.5rem);
+  padding: clamp(1.25rem, 4vw, 2.5rem);
   border-radius: 16px;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08);
-  animation: fadeInUp 0.6s ease-out;
-  position: relative;
-  z-index: 1;
-  overflow: visible;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.06);
+  animation: fadeInUp 0.5s ease-out;
+  box-sizing: border-box;
 }
 
 .about-card h1 {
   color: #1e293b;
-  font-size: 2rem;
-  margin-bottom: 0.5rem;
+  font-size: clamp(1.5rem, 4vw, 2.25rem);
+  margin: 0 0 0.5rem 0;
   background: linear-gradient(135deg, #2563eb, #7c3aed);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+  font-weight: 800;
 }
 
 .about-subtitle {
   color: #64748b;
-  font-size: 1rem;
+  font-size: clamp(0.9rem, 2.5vw, 1.05rem);
   line-height: 1.6;
   margin-bottom: 2rem;
 }
 
+/* Feature Grid Adjustments */
 .feature-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
   gap: 1.25rem;
   margin-bottom: 2rem;
 }
 
 .feature-card {
   background-color: #f8fafc;
-  padding: 1.5rem;
+  padding: 1.25rem;
   border-radius: 12px;
   border: 1px solid #e2e8f0;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
@@ -63,13 +63,14 @@
 
 .feature-card:hover {
   transform: translateY(-3px);
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
 }
 
 .feature-card h3 {
   margin: 0 0 0.5rem 0;
   font-size: 1.05rem;
   color: #1e293b;
+  font-weight: 700;
 }
 
 .feature-card p {
@@ -79,33 +80,39 @@
   line-height: 1.5;
 }
 
+/* Extra Sections (Privacy & Portfolio) */
 .about-extra {
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
   margin-top: 1rem;
   padding-top: 1.5rem;
-  border-top: 2px solid #e2e8f0;
+  border-top: 2px solid #f1f5f9;
 }
 
 .about-extra .privacy-section.about {
-  border-left-color: #6366f1;
+  background: #f8fafc;
+  padding: 1.25rem;
+  border-radius: 12px;
+  border-left: 4px solid #6366f1;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .about-extra .privacy-section.about:hover {
-  transform: translateX(4px);
-  box-shadow: 0 4px 20px rgba(99, 102, 241, 0.1);
+  transform: translateX(3px);
+  box-shadow: 0 4px 15px rgba(99, 102, 241, 0.08);
 }
 
 .about-extra .privacy-section.about h2 {
   font-size: 1.1rem;
   color: #1e293b;
-  margin-bottom: 0.5rem;
+  margin: 0 0 0.5rem 0;
+  font-weight: 700;
 }
 
 .about-extra .privacy-section.about p {
   color: #475569;
+  font-size: 0.9rem;
   line-height: 1.6;
   margin-bottom: 0.75rem;
 }
@@ -121,35 +128,36 @@
 }
 
 .about-privacy-link:hover {
-  color: #4338ca;
+  color: #3730a3;
   text-decoration: underline;
 }
 
+/* Developer Section */
 .developer-section {
   text-align: center;
-  padding: 2rem;
+  padding: clamp(1.25rem, 3vw, 2rem);
   background: linear-gradient(135deg, #f8fafc, #eef2ff);
   border-radius: 16px;
   border: 1px solid #e2e8f0;
 }
 
 .developer-avatar {
-  font-size: 3rem;
-  margin-bottom: 0.75rem;
+  font-size: 2.75rem;
+  margin-bottom: 0.5rem;
 }
 
 .developer-section h2 {
-  font-size: 1rem;
+  font-size: 0.85rem;
   color: #64748b;
-  font-weight: 600;
+  font-weight: 700;
   margin: 0 0 0.5rem 0;
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
 
 .developer-name {
-  display: block;
-  font-size: 1.75rem;
+  display: inline-block;
+  font-size: clamp(1.3rem, 3.5vw, 1.75rem);
   font-weight: 800;
   background: linear-gradient(135deg, #4f46e5, #7c3aed);
   -webkit-background-clip: text;
@@ -161,23 +169,23 @@
 }
 
 .developer-name:hover {
-  opacity: 0.8;
-  text-decoration: none;
+  opacity: 0.85;
 }
 
 .developer-portfolio-text {
   color: #475569;
-  font-size: 0.9rem;
+  font-size: 0.875rem;
   line-height: 1.6;
   max-width: 500px;
-  margin: 0 auto 1rem;
+  margin: 0 auto 1.25rem;
 }
 
 .portfolio-link {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 0.35rem;
-  padding: 10px 22px;
+  padding: 10px 24px;
   background: linear-gradient(135deg, #4f46e5, #7c3aed);
   color: #ffffff;
   text-decoration: none;
@@ -190,80 +198,37 @@
 
 .portfolio-link:hover {
   transform: translateY(-2px);
-  box-shadow: 0 12px 28px rgba(79, 70, 229, 0.35);
+  box-shadow: 0 12px 25px rgba(79, 70, 229, 0.35);
   text-decoration: none;
 }
 
 @keyframes fadeInUp {
-    from {
-        opacity: 0;
-        transform: translateY(30px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-@media (max-width: 768px) {
-    .about-card {
-        padding: 1.5rem;
-    }
+/* ======================================= */
+/* Mobile Media Queries */
+/* ======================================= */
+@media (max-width: 600px) {
+  .feature-grid {
+    grid-template-columns: 1fr;
+    gap: 0.85rem;
+  }
 
-    .about-card h1 {
-        font-size: 1.6rem;
-    }
+  .developer-section {
+    padding: 1.25rem 1rem;
+  }
 
-    .about-subtitle {
-        font-size: 0.95rem;
-    }
-
-    .feature-grid {
-        grid-template-columns: 1fr;
-        gap: 1rem;
-    }
-
-    .developer-name {
-        font-size: 1.4rem;
-    }
-
-    .developer-section {
-        padding: 1.5rem;
-    }
-}
-
-@media (max-width: 480px) {
-    .about-card {
-        padding: 1.25rem;
-        border-radius: 12px;
-    }
-
-    .about-card h1 {
-        font-size: 1.4rem;
-    }
-
-    .about-subtitle {
-        font-size: 0.9rem;
-    }
-
-    .feature-card {
-        padding: 1rem;
-    }
-
-    .feature-card h3 {
-        font-size: 0.95rem;
-    }
-
-    .about-extra {
-        gap: 1rem;
-        padding-top: 1rem;
-    }
-
-    .developer-section {
-        padding: 1.25rem;
-    }
-
-    .developer-avatar {
-        font-size: 2.5rem;
-    }
+  .portfolio-link {
+    width: 100%;
+    max-width: 250px;
+    box-sizing: border-box;
+  }
 }
