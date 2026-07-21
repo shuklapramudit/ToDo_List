@@ -1,16 +1,14 @@
 import "../style/Footer.css";
 
 function Footer() {
-    return (
-        <footer className="footer">
-            <div className="footer-content">
-                <p>&copy; {new Date().getFullYear()} Todo App. All rights reserved.</p>
-                <div className="footer-links">
-                    <span>Built with React & Node.js</span>
-                </div>
-            </div>
-        </footer>
-    );
+  return (
+    <footer className="app-footer">
+      <div className="footer-container">
+        <p>&copy; {new Date().getFullYear()} Todo App. All rights reserved.</p>
+        <span className="footer-tagline">Built for Seamless Productivity 🚀</span>
+      </div>
+    </footer>
+  );
 }
 
 export default Footer;
