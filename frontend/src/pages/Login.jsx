@@ -12,42 +12,26 @@ function Login() {
   const handleLogin = async (e) => {
     e.preventDefault();
 
-    console.log("========== LOGIN ==========");
+    console.log("Login Clicked");
 
     const API = import.meta.env.VITE_API_URL;
-
     console.log("API URL:", API);
-    console.log("Email:", email);
 
     try {
-      const res = await axios.post(
-        `${API}/api/auth/login`,
-        {
-          email,
-          password,
-        },
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-          withCredentials: true,
-        }
-      );
+      const res = await axios.post(`${API}/api/auth/login`, {
+        email,
+        password,
+      });
 
       console.log("Response:", res.data);
 
       localStorage.setItem("token", res.data.token);
 
       alert("Login Successful");
-
       navigate("/dashboard");
     } catch (error) {
       console.error("Login Error:", error);
-
-      if (error.response) {
-        console.log("Status:", error.response.status);
-        console.log("Data:", error.response.data);
-      }
+      console.log("Response:", error.response);
 
       alert(error.response?.data?.message || "Login Failed");
     }
@@ -75,16 +59,11 @@ function Login() {
             required
           />
 
-          <button type="submit">
-            Login
-          </button>
+          <button type="submit">Login</button>
         </form>
 
         <p>
-          Don't have an account?{" "}
-          <Link to="/register">
-            Register
-          </Link>
+          Don't have an account? <Link to="/register">Register</Link>
         </p>
       </div>
     </div>
