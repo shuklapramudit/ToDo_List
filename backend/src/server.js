@@ -11,32 +11,40 @@ dotenv.config();
 const app = express();
 
 // ===============================
-// CORS Configuration
+// Bulletproof CORS Configuration
 // ===============================
 const allowedOrigins = [
   "http://localhost:5173",
   "http://localhost:3000",
-  process.env.CLIENT_URL?.replace(/\/$/, ""),
   "https://to-do-list-rust-eta-49.vercel.app",
-].filter(Boolean);
+];
+
+if (process.env.CLIENT_URL) {
+  allowedOrigins.push(process.env.CLIENT_URL.replace(/\/$/, ""));
+}
 
 const corsOptions = {
-  origin: function (origin, callback) {
-    if (
-      !origin ||
-      allowedOrigins.includes(origin) ||
-      origin.endsWith(".vercel.app")
-    ) {
+  origin: (origin, callback) => {
+    // Postman/Server-to-server requests ke liye
+    if (!origin) return callback(null, true);
+
+    const isAllowed =
+      allowedOrigins.includes(origin) || origin.endsWith(".vercel.app");
+
+    if (isAllowed) {
       callback(null, true);
     } else {
-      callback(new Error("Blocked by CORS policy"));
+      // ❌ DON'T pass new Error() - pass false so CORS header isn't broken
+      callback(null, false);
     }
   },
-  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization"],
+  methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"],
   credentials: true,
+  optionsSuccessStatus: 200, // Legacy browsers handling
 };
 
+// Apply CORS to all routes and preflight requests
 app.use(cors(corsOptions));
 app.options("*", cors(corsOptions));
 
