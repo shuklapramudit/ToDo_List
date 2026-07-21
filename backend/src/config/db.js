@@ -4,20 +4,25 @@ import dotenv from "dotenv";
 dotenv.config();
 
 const db = mysql.createConnection({
-    host: process.env.DB_HOST || process.env.MYSQLHOST,
-    port: process.env.DB_PORT || process.env.MYSQLPORT,
-    user: process.env.DB_USER || process.env.MYSQLUSER,
-    password: process.env.DB_PASSWORD || process.env.MYSQLPASSWORD,
-    database: process.env.DB_NAME || process.env.MYSQLDATABASE,
+  host: process.env.DB_HOST,
+  port: process.env.DB_PORT,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME,
+
+  ssl: {
+    rejectUnauthorized: false,
+  },
 });
 
 db.connect((err) => {
-    if (err) {
-        console.error("Database connection failed:", err);
-        process.exit(1);
-    }
+  if (err) {
+    console.error("❌ Database connection failed:");
+    console.error(err);
+    process.exit(1);
+  }
 
-    console.log("✅ MySQL Connected Successfully");
+  console.log("✅ MySQL Connected Successfully");
 });
 
 export default db;

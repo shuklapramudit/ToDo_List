@@ -35,6 +35,15 @@ app.get("/", (req, res) => {
   res.send("Todo Backend API is running...");
 });
 
+// ✅ Test Route
+app.get("/test", (req, res) => {
+  res.json({
+    success: true,
+    message: "Latest Code Running",
+    timestamp: new Date(),
+  });
+});
+
 app.use("/api/auth", authRoutes);
 app.use("/api/tasks", taskRoutes);
 
@@ -45,7 +54,7 @@ const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {
   console.log("================================");
-  console.log("🚀 Server Started");
+  console.log("Server Started");
   console.log("PORT:", PORT);
   console.log("DB_HOST:", process.env.DB_HOST);
   console.log("DB_PORT:", process.env.DB_PORT);
