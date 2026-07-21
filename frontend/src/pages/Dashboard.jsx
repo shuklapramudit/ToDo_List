@@ -2,6 +2,9 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import "../style/Auth.css";
 
+// Dynamic API URL for Vercel/Render vs Local
+const API_URL = import.meta.env.VITE_BACKEND_URL || "https://to-do-list-v4p2.onrender.com/api/tasks";
+
 function Dashboard() {
     const [taskName, setTaskName] = useState("");
     const [description, setDescription] = useState("");
@@ -20,19 +23,32 @@ function Dashboard() {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
+    // Auto-dismiss alerts after 4 seconds
+    useEffect(() => {
+        if (error || success) {
+            const timer = setTimeout(() => {
+                setError("");
+                setSuccess("");
+            }, 4000);
+            return () => clearTimeout(timer);
+        }
+    }, [error, success]);
+
     const fetchTasks = async () => {
         const token = localStorage.getItem("token");
         if (!token) return;
 
         try {
-            const res = await axios.get("http://localhost:5000/api/tasks", {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
+            const res = await axios.get(API_URL, {
+                headers: { Authorization: `Bearer ${token}` },
             });
-            setTasks(res.data.data || []);
+            const fetchedData = res.data?.data || res.data || [];
+            setTasks(Array.isArray(fetchedData) ? fetchedData : []);
+            setError("");
         } catch (err) {
-            setError(err.response?.data?.message || "Unable to load tasks.");
+            console.error("Fetch tasks error:", err);
+            // New user has 0 tasks, do not display scary red banner
+            setTasks([]);
         }
     };
 
@@ -50,7 +66,7 @@ function Dashboard() {
         try {
             setLoading(true);
             const res = await axios.post(
-                "http://localhost:5000/api/tasks",
+                API_URL,
                 {
                     task_name: taskName,
                     description,
@@ -58,19 +74,18 @@ function Dashboard() {
                     status,
                 },
                 {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
+                    headers: { Authorization: `Bearer ${token}` },
                 }
             );
 
-            setSuccess(res.data.message || "Task added successfully.");
+            setSuccess(res.data?.message || "Task added successfully.");
             setTaskName("");
             setDescription("");
             setPriority("High");
             setStatus("Pending");
             fetchTasks();
         } catch (err) {
+            console.error("Create task error:", err);
             setError(err.response?.data?.message || "Failed to add task.");
         } finally {
             setLoading(false);
@@ -80,7 +95,7 @@ function Dashboard() {
     const startEditingStatus = (task) => {
         setEditingTaskId(task.id);
         setEditedStatus(task.status || "Pending");
-        setCompletionComment("");
+        setCompletionComment(task.comment || "");
         setSuccess("");
         setError("");
     };
@@ -91,28 +106,26 @@ function Dashboard() {
         setCompletionComment("");
     };
 
-    const updateTaskStatus = async (taskId, taskName, description, priority, newStatus, comment = "") => {
+    const updateTaskStatus = async (taskId, tName, desc, prio, newStatus, comment = "") => {
         const token = localStorage.getItem("token");
         if (!token) {
-            setError("You must be logged in to update task status.");
+            setError("You must be logged in to update status.");
             return;
         }
 
         try {
             setLoading(true);
             await axios.put(
-                `http://localhost:5000/api/tasks/${taskId}`,
+                `${API_URL}/${taskId}`,
                 {
-                    task_name: taskName,
-                    description,
-                    priority,
+                    task_name: tName,
+                    description: desc,
+                    priority: prio,
                     status: newStatus,
                     completion_comment: comment,
                 },
                 {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
+                    headers: { Authorization: `Bearer ${token}` },
                 }
             );
 
@@ -133,7 +146,14 @@ function Dashboard() {
             return;
         }
 
-        await updateTaskStatus(task.id, task.task_name, task.description, task.priority, editedStatus, editedStatus === "Completed" ? completionComment : "");
+        await updateTaskStatus(
+            task.id,
+            task.task_name || task.title,
+            task.description,
+            task.priority,
+            editedStatus,
+            editedStatus === "Completed" ? completionComment : ""
+        );
     };
 
     return (
@@ -217,17 +237,7 @@ function Dashboard() {
                         </div>
 
                         <button type="submit" className="submit-btn" disabled={loading}>
-                            {loading ? (
-                                <span className="btn-content">
-                                    <span className="spinner"></span>
-                                    Saving...
-                                </span>
-                            ) : (
-                                <span className="btn-content">
-                                    <span className="btn-icon">+</span>
-                                    Add Todo
-                                </span>
-                            )}
+                            {loading ? "Saving..." : "+ Add Todo"}
                         </button>
                     </form>
                 </div>
@@ -244,21 +254,21 @@ function Dashboard() {
                         <div className="stat-card pending">
                             <span className="stat-icon">⏳</span>
                             <div className="stat-info">
-                                <span className="stat-value">{tasks.filter(t => t.status === "Pending").length}</span>
+                                <span className="stat-value">{tasks.filter((t) => t.status === "Pending").length}</span>
                                 <span className="stat-label">Pending</span>
                             </div>
                         </div>
                         <div className="stat-card in-progress">
                             <span className="stat-icon">🔄</span>
                             <div className="stat-info">
-                                <span className="stat-value">{tasks.filter(t => t.status === "In Progress").length}</span>
+                                <span className="stat-value">{tasks.filter((t) => t.status === "In Progress").length}</span>
                                 <span className="stat-label">In Progress</span>
                             </div>
                         </div>
                         <div className="stat-card completed">
                             <span className="stat-icon">✅</span>
                             <div className="stat-info">
-                                <span className="stat-value">{tasks.filter(t => t.status === "Completed").length}</span>
+                                <span className="stat-value">{tasks.filter((t) => t.status === "Completed").length}</span>
                                 <span className="stat-label">Completed</span>
                             </div>
                         </div>
@@ -276,11 +286,11 @@ function Dashboard() {
                         </div>
                     ) : (
                         tasks.map((task, index) => (
-                            <div className="task-card" key={task.id} style={{ animationDelay: `${index * 0.05}s` }}>
+                            <div className="task-card" key={task.id || index}>
                                 <div className="task-card-header">
-                                    <h3>{task.task_name}</h3>
+                                    <h3>{task.task_name || task.title}</h3>
                                     <div className="task-card-tags">
-                                        <span className={`task-priority ${task.priority.toLowerCase()}`}>
+                                        <span className={`task-priority ${(task.priority || "Low").toLowerCase()}`}>
                                             {task.priority === "High" ? "🔴" : task.priority === "Medium" ? "🟡" : "🟢"} {task.priority}
                                         </span>
                                         {editingTaskId === task.id ? (
@@ -321,8 +331,9 @@ function Dashboard() {
                                     </div>
                                 </div>
                                 <p>{task.description}</p>
+                                {task.comment && <blockquote className="task-comment-preview">💬 {task.comment}</blockquote>}
                                 <div className="task-meta">
-                                    <span>🕒 Created: {new Date(task.created_at).toLocaleString()}</span>
+                                    <span>🕒 Created: {task.created_at ? new Date(task.created_at).toLocaleString() : "Recently"}</span>
                                 </div>
                             </div>
                         ))
