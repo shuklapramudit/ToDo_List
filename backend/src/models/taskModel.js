@@ -11,6 +11,10 @@ export const getTasksByUserId = async (userId) => {
   return rows;
 };
 
+// Alias export so taskController import doesn't fail
+export const getAllTask = getTasksByUserId;
+export const getAllTasks = getTasksByUserId;
+
 // 2. Create a new task
 export const createTask = async (title, description, priority, status, userId) => {
   const query = `
