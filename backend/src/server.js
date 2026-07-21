@@ -10,61 +10,34 @@ dotenv.config();
 
 const app = express();
 
-// Allowed frontend origins (Vercel Production & Localhost)
-const allowedOrigins = [
-  "https://to-do-pramudit.vercel.app",
-  "http://localhost:5173",
-  "http://localhost:3000"
-];
+// 1. Force Manual CORS Headers First (Guarantees Vercel access)
+app.use((req, res, next) => {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, PATCH, OPTIONS");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
+  
+  if (req.method === "OPTIONS") {
+    return res.status(200).send();
+  }
+  next();
+});
 
-// ===============================
-// Robust CORS & Preflight Setup
-// ===============================
-const corsOptions = {
-  origin: function (origin, callback) {
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      // Fallback for testing environments
-      callback(null, true);
-    }
-  },
-  methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"],
-  credentials: true,
-};
+// 2. Standard CORS Middleware as Fallback
+app.use(cors());
 
-app.use(cors(corsOptions));
-
-// Preflight handler for all routes
-app.options("*", cors(corsOptions));
-
-// Body Parser Middleware
+// Body Parsers
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// ===============================
 // Routes
-// ===============================
 app.get("/", (req, res) => {
   res.send("Todo Backend API is running...");
-});
-
-// ✅ Test Route
-app.get("/test", (req, res) => {
-  res.json({
-    success: true,
-    message: "Latest Code Running",
-    timestamp: new Date(),
-  });
 });
 
 app.use("/api/auth", authRoutes);
 app.use("/api/tasks", taskRoutes);
 
-// ===============================
 // Global Error Handler
-// ===============================
 app.use((err, req, res, next) => {
   console.error("❌ Server Error:", err.stack || err.message);
   res.status(err.status || 500).json({
@@ -73,13 +46,7 @@ app.use((err, req, res, next) => {
   });
 });
 
-// ===============================
-// Server Start
-// ===============================
 const PORT = process.env.PORT || 5000;
-
 app.listen(PORT, () => {
-  console.log("================================");
-  console.log("🚀 Server Started on PORT:", PORT);
-  console.log("================================");
+  console.log("🚀 Server Running on PORT:", PORT);
 });
