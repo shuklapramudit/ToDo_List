@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Dashboard from "./pages/Dashboard";
+import About from "./pages/About";
 import PrivateRoute from "./components/PrivateRoute";
 
 function App() {
@@ -28,6 +29,16 @@ function App() {
                     element={
                         <PrivateRoute>
                             <Dashboard />
+                        </PrivateRoute>
+                    }
+                />
+
+                {/* Protected About Page */}
+                <Route
+                    path="/about"
+                    element={
+                        <PrivateRoute>
+                            <About />
                         </PrivateRoute>
                     }
                 />
