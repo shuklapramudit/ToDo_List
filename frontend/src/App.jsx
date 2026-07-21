@@ -4,44 +4,42 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Dashboard from "./pages/Dashboard";
 import About from "./pages/About";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
 import PrivateRoute from "./components/PrivateRoute";
+import ProtectedLayout from "./components/ProtectedLayout";
+import "./style/App.css";
 
 function App() {
     return (
         <BrowserRouter>
             <Routes>
 
-                {/* Login Page */}
+                {/* Public Routes */}
                 <Route
                     path="/"
                     element={<Login />}
                 />
 
-                {/* Register Page */}
                 <Route
                     path="/register"
                     element={<Register />}
                 />
 
-                {/* Protected Dashboard */}
-                <Route
-                    path="/dashboard"
-                    element={
-                        <PrivateRoute>
-                            <Dashboard />
-                        </PrivateRoute>
-                    }
-                />
-
-                {/* Protected About Page */}
-                <Route
-                    path="/about"
-                    element={
-                        <PrivateRoute>
-                            <About />
-                        </PrivateRoute>
-                    }
-                />
+                {/* Protected Routes with Global Header & Footer */}
+                <Route element={<PrivateRoute><ProtectedLayout /></PrivateRoute>}>
+                    <Route
+                        path="/dashboard"
+                        element={<Dashboard />}
+                    />
+                    <Route
+                        path="/about"
+                        element={<About />}
+                    />
+                    <Route
+                        path="/privacy-policy"
+                        element={<PrivacyPolicy />}
+                    />
+                </Route>
 
             </Routes>
         </BrowserRouter>

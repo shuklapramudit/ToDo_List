@@ -1,25 +1,95 @@
 .app-footer {
-  background-color: #0f172a;
-  color: #94a3b8;
-  padding: 1.5rem;
-  text-align: center;
-  margin-top: auto;
-  border-top: 1px solid #1e293b;
+    background: linear-gradient(135deg, #4f46e5, #7c3aed);
+    color: #e2e8f0;
+    padding: 2rem 1.5rem;
+    text-align: center;
+    margin-top: auto;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    position: relative;
+    overflow: hidden;
+}
+
+.app-footer::before {
+    content: "";
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255,255,255,0.05) 0%, transparent 60%);
+    animation: footerGlow 8s ease-in-out infinite alternate;
+}
+
+@keyframes footerGlow {
+    from { transform: translate(0, 0); }
+    to { transform: translate(20px, -20px); }
 }
 
 .footer-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.25rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.6rem;
+    position: relative;
+    z-index: 1;
 }
 
 .footer-container p {
-  margin: 0;
-  font-size: 0.9rem;
+    margin: 0;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #ffffff;
 }
 
 .footer-tagline {
-  font-size: 0.8rem;
-  color: #64748b;
+    font-size: 0.85rem;
+    color: #c7d2fe;
+    letter-spacing: 0.02em;
+}
+
+.footer-links {
+    display: flex;
+    gap: 1.25rem;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.footer-link {
+    color: #e2e8f0;
+    text-decoration: none;
+    font-size: 0.85rem;
+    font-weight: 500;
+    transition: color 0.2s ease;
+    padding: 4px 8px;
+    border-radius: 6px;
+}
+
+.footer-link:hover {
+    color: #ffffff;
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.footer-credit {
+    margin-top: 0.25rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    width: 100%;
+}
+
+.footer-credit p {
+    font-size: 0.8rem;
+    color: #a5b4fc;
+    font-weight: 500;
+}
+
+.developer-link {
+    color: #fbbf24;
+    text-decoration: none;
+    font-weight: 700;
+    transition: color 0.2s ease, text-decoration 0.2s ease;
+}
+
+.developer-link:hover {
+    color: #f59e0b;
+    text-decoration: underline;
 }

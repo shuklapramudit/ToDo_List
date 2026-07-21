@@ -29,6 +29,12 @@ function Header() {
                 >
                     About
                 </Link>
+                <Link 
+                    to="/privacy-policy" 
+                    className={`nav-item ${location.pathname === "/privacy-policy" ? "active" : ""}`}
+                >
+                    Privacy Policy
+                </Link>
                 <button className="logout-btn" onClick={handleLogout}>
                     Logout
                 </button>
