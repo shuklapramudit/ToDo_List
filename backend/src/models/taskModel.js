@@ -1,29 +1,38 @@
 import db from "../config/db.js";
 
-// 1. Get all tasks for a specific user
+// 1. Get task by ID
+export const getById = async (taskId) => {
+  const query = `SELECT * FROM tasks WHERE id = ?`;
+  const [rows] = await db.query(query, [taskId]);
+  return rows[0];
+};
+
+export const getTaskById = getById;
+
+// 2. Get all tasks for a specific user
 export const getTasksByUserId = async (userId) => {
   const query = `
     SELECT * FROM tasks 
     WHERE user_id = ? 
-    ORDER BY created_at DESC
+    ORDER BY id DESC
   `;
   const [rows] = await db.query(query, [userId]);
   return rows;
 };
 
-// Alias export so taskController import doesn't fail
+// Aliases for taskController
 export const getAllTask = getTasksByUserId;
 export const getAllTasks = getTasksByUserId;
 
-// 2. Create a new task
+// 3. Create a new task
 export const createTask = async (title, description, priority, status, userId) => {
   const query = `
     INSERT INTO tasks (title, description, priority, status, user_id) 
     VALUES (?, ?, ?, ?, ?)
   `;
   const [result] = await db.query(query, [
-    title,
-    description,
+    title || "Untitled Task",
+    description || "",
     priority || "Low",
     status || "Pending",
     userId,
@@ -31,7 +40,7 @@ export const createTask = async (title, description, priority, status, userId) =
   return result;
 };
 
-// 3. Update an existing task
+// 4. Update an existing task
 export const updateTask = async (taskId, title, description, priority, status, userId) => {
   const query = `
     UPDATE tasks 
@@ -49,7 +58,7 @@ export const updateTask = async (taskId, title, description, priority, status, u
   return result;
 };
 
-// 4. Delete a task
+// 5. Delete a task
 export const deleteTask = async (taskId, userId) => {
   const query = `
     DELETE FROM tasks 
