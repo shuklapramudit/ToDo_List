@@ -28,15 +28,21 @@
   text-align: center;
 }
 
-/* Fixed Heading Clipping */
+/* =============================== */
+/* FIXED HEADING CLIPPING SECTION  */
+/* =============================== */
 .about-title {
   display: inline-block;
   font-size: clamp(1.6rem, 4.5vw, 2.4rem);
   font-weight: 800;
-  margin: 0 0 0.5rem 0;
-  padding-right: 12px;  /* Extra padding prevents letter clipping at the end */
-  padding-bottom: 6px;
-  line-height: 1.3;
+  margin: 0 auto 0.5rem auto;
+  
+  /* Clipping Prevention Fixes */
+  padding-right: 20px;       /* Adds right spacing so 'App' is never cut off */
+  padding-bottom: 8px;       /* Prevents bottom descender clipping */
+  line-height: 1.4;          /* Gives vertical breathing room for gradient bounding box */
+  
+  /* Gradient Styling */
   background: linear-gradient(135deg, #2563eb, #7c3aed);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -89,7 +95,7 @@
   line-height: 1.5;
 }
 
-/* Extra Sections */
+/* Extra Sections (Privacy Policy & Portfolio) */
 .about-extra {
   display: flex;
   flex-direction: column;
@@ -142,7 +148,7 @@
   text-decoration: underline;
 }
 
-/* Developer Section */
+/* Developer Card Section */
 .developer-section {
   text-align: center;
   padding: clamp(1.25rem, 3vw, 2rem);
@@ -175,7 +181,7 @@
   background-clip: text;
   text-decoration: none;
   margin-bottom: 0.75rem;
-  padding-right: 6px;
+  padding-right: 10px;
   transition: opacity 0.2s ease;
 }
 
@@ -224,7 +230,7 @@
   }
 }
 
-/* Mobile Media Queries */
+/* Mobile Devices Optimization */
 @media (max-width: 600px) {
   .feature-grid {
     grid-template-columns: 1fr;
