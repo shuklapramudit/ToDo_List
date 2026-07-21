@@ -1,77 +1,56 @@
-import db from "../config/db.js"
+import db from "../config/db.js";
 
-const createTask = (task_name, description, priority, status = "Pending") => {
-    return new Promise((resolve, reject) => {
-        const insertQuery = `
-        INSERT INTO tasks (task_name, description, priority, status)
-        VALUES(?, ?, ?, ?)
-        `;
-        db.query(insertQuery, [task_name, description, priority, status], (err, result) => {
-            if (err) {
-                return reject(err)
-            }
-            resolve(result)
-        });
-    });
+// 1. Get all tasks for a specific user
+export const getTasksByUserId = async (userId) => {
+  const query = `
+    SELECT * FROM tasks 
+    WHERE user_id = ? 
+    ORDER BY created_at DESC
+  `;
+  const [rows] = await db.query(query, [userId]);
+  return rows;
 };
 
-const getAllTask = () => {
-    return new Promise((resolve, reject) => {
-        const selectQuery = "SELECT * FROM tasks ORDER BY created_at DESC"
-        db.query(selectQuery, (err, result) => {
-            if (err) {
-                return reject(err)
-            }
-            resolve(result)
-        });
-    });
+// 2. Create a new task
+export const createTask = async (title, description, priority, status, userId) => {
+  const query = `
+    INSERT INTO tasks (title, description, priority, status, user_id) 
+    VALUES (?, ?, ?, ?, ?)
+  `;
+  const [result] = await db.query(query, [
+    title,
+    description,
+    priority || "Low",
+    status || "Pending",
+    userId,
+  ]);
+  return result;
 };
 
-const getById = (id) => {
-    return new Promise((resolve, reject) => {
-        const idQuery = "SELECT * FROM tasks WHERE id=?"
-        db.query(idQuery, [id], (err, result) => {
-            if (err) {
-                return reject(err)
-            }
-            resolve(result)
-        });
-    });
-}
-const updateTask = (id, task_name, description, priority, status) => {
-    return new Promise((resolve, reject) => {
-        const UpdateQuery = ` UPDATE tasks
-        SET
-        task_name=?,
-        description=?,
-        priority=?,
-         status=?
-    WHERE id=?
-        `
-            ;
-        db.query(UpdateQuery, [task_name, description, priority, status, id], (err, result) => {
-            if (err) {
-                return reject(err)
-            }
-            resolve(result)
-        });
-    });
-}
-const deleteTask = (id) => {
-    return new Promise((resolve, reject) => {
-        const deleteQuery = "DELETE FROM tasks WHERE id=?"
-        db.query(deleteQuery, [id], (err, result) => {
-            if (err) {
-                return reject(err)
-            }
-            resolve(result)
-        });
-    });
-}
-export {
-    createTask,
-    getAllTask,
-    getById,
-    updateTask,
-    deleteTask
-}
+// 3. Update an existing task
+export const updateTask = async (taskId, title, description, priority, status, userId) => {
+  const query = `
+    UPDATE tasks 
+    SET title = ?, description = ?, priority = ?, status = ? 
+    WHERE id = ? AND user_id = ?
+  `;
+  const [result] = await db.query(query, [
+    title,
+    description,
+    priority,
+    status,
+    taskId,
+    userId,
+  ]);
+  return result;
+};
+
+// 4. Delete a task
+export const deleteTask = async (taskId, userId) => {
+  const query = `
+    DELETE FROM tasks 
+    WHERE id = ? AND user_id = ?
+  `;
+  const [result] = await db.query(query, [taskId, userId]);
+  return result;
+};
