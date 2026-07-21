@@ -14,6 +14,7 @@ const registerController = async (req, res) => {
       });
     }
 
+    // Check if user already exists
     const existingUser = await getUserByEmail(email);
 
     if (Array.isArray(existingUser) && existingUser.length > 0) {
@@ -23,8 +24,10 @@ const registerController = async (req, res) => {
       });
     }
 
+    // Hash password
     const hashedPassword = await bcrypt.hash(password, 10);
 
+    // Save to database
     const result = await createUser(name, email, hashedPassword);
 
     return res.status(201).json({
@@ -56,6 +59,7 @@ const loginController = async (req, res) => {
       });
     }
 
+    // Fetch user from DB
     const user = await getUserByEmail(email);
 
     if (!Array.isArray(user) || user.length === 0) {
@@ -65,6 +69,7 @@ const loginController = async (req, res) => {
       });
     }
 
+    // Verify password
     const isMatch = await bcrypt.compare(password, user[0].password);
 
     if (!isMatch) {
@@ -81,6 +86,7 @@ const loginController = async (req, res) => {
       });
     }
 
+    // Generate JWT Token
     const token = jwt.sign(
       {
         id: user[0].id,

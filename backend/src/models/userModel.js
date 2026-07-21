@@ -1,34 +1,23 @@
 import db from "../config/db.js";
 
-const createUser = (name, email, password) => {
-    return new Promise((resolve, reject) => {
-        const query = `
-            INSERT INTO users (name, email, password)
-            VALUES (?, ?, ?)
-        `;
-
-        db.query(query, [name, email, password], (err, result) => {
-            if (err) return reject(err);
-            resolve(result);
-        });
-    });
+// Get user by email
+const getUserByEmail = async (email) => {
+  const query = `
+    SELECT * FROM users
+    WHERE email = ?
+  `;
+  const [rows] = await db.query(query, [email]);
+  return rows;
 };
 
-const getUserByEmail = (email) => {
-    return new Promise((resolve, reject) => {
-        const query = `
-            SELECT * FROM users
-            WHERE email = ?
-        `;
-
-        db.query(query, [email], (err, result) => {
-            if (err) return reject(err);
-            resolve(result);
-        });
-    });
+// Create new user
+const createUser = async (name, email, password) => {
+  const query = `
+    INSERT INTO users (name, email, password)
+    VALUES (?, ?, ?)
+  `;
+  const [result] = await db.query(query, [name, email, password]);
+  return result;
 };
 
-export {
-    createUser,
-    getUserByEmail
-};
+export { createUser, getUserByEmail };
